@@ -11,38 +11,38 @@ from datacenter.models import Commendation
 from datacenter.models import Subject
 
 
-def fix_marks(schoolkid):
+def get_schoolkid(child_name):
     try:
-        child = Schoolkid.objects.get(full_name__icontains=schoolkid)
-        marks = Mark.objects.filter(schoolkid=child, points__in=[2, 3])
-        marks.update(points=5)
+        schoolkid = Schoolkid.objects.get(full_name__icontains=child_name)
+        return schoolkid
     except ObjectDoesNotExist:
         print('ОШИБКА: Такого ученика не существует. Проверьте вводимые данные')
     except MultipleObjectsReturned:
         print('ОШИБКА: Найдено более одного ученика - уточните данные.')
 
 
-def remove_chastisements(schoolkid):
-    try:
-        child = Schoolkid.objects.get(full_name__icontains=schoolkid)
-        chastisements = Chastisement.objects.filter(schoolkid=child)
-        chastisements.delete()
-    except ObjectDoesNotExist:
-        print('ОШИБКА: Такого ученика не существует. Проверьте вводимые данные')
-    except MultipleObjectsReturned:
-        print('ОШИБКА: Найдено более одного ученика - уточните данные.')
+def fix_marks(child_name):
+    schoolkid = get_schoolkid(child_name)
+    marks = Mark.objects.filter(schoolkid=schoolkid, points__in=[2, 3])
+    marks.update(points=5)
 
 
-def create_commendation(schoolkid, subject):
+def remove_chastisements(child_name):
+    schoolkid = get_schoolkid(child_name)
+    chastisements = Chastisement.objects.filter(schoolkid=schoolkid)
+    chastisements.delete()
+
+
+def create_commendation(child_name, subject):
     try:
-        child = Schoolkid.objects.get(full_name__icontains=schoolkid)
+        schoolkid = get_schoolkid(child_name)
         subject = Subject.objects.get(
             title=subject,
-            year_of_study=child.year_of_study
+            year_of_study=schoolkid.year_of_study
         )
         lesson = Lesson.objects.filter(
-            year_of_study=child.year_of_study,
-            group_letter=child.group_letter,
+            year_of_study=schoolkid.year_of_study,
+            group_letter=schoolkid.group_letter,
             subject=subject
         ).order_by('-date').first()
 
@@ -67,7 +67,7 @@ def create_commendation(schoolkid, subject):
         Commendation.objects.create(
             text=commendation_text,
             created=lesson.date,
-            schoolkid=child,
+            schoolkid=schoolkid,
             subject=lesson.subject,
             teacher=lesson.teacher
         )
