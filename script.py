@@ -71,7 +71,7 @@ def create_commendation(child_name, subject):
             subject=lesson.subject,
             teacher=lesson.teacher
         )
-    except ObjectDoesNotExist:
-        print('ОШИБКА: Такого ученика или предмета не существует. Проверьте вводимые данные')
-    except MultipleObjectsReturned:
-        print('ОШИБКА: Найдено более одного ученика - уточните данные.')
+    except Subject.DoesNotExist:
+        print('ОШИБКА: Такого предмета не существует. Проверьте вводимые данные')
+    except Subject.MultipleObjectsReturned:
+        print('ОШИБКА: Проверьте модель Subject на дубликаты')
