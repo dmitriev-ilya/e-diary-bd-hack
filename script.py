@@ -8,6 +8,25 @@ from datacenter.models import Commendation
 from datacenter.models import Subject
 
 
+COMMENDATIONS = [
+    'Прекрасно!',
+    'Ты меня приятно удивил!',
+    'Очень хороший ответ!',
+    'Так держать!',
+    'Ты растешь над собой!',
+    'Великолепно!',
+    'Молодец!',
+    'Гораздо лучше, чем я ожидал!',
+    'Ты, как всегда, точен!',
+    'Я поражен!',
+    'Я вижу, как ты стараешься!',
+    'Ты многое сделал, я это вижу!',
+    'Замечательно!',
+    'Потрясающе!',
+    'С каждым разом у тебя получается всё лучше!'
+]
+
+
 def get_schoolkid(child_name):
     try:
         schoolkid = Schoolkid.objects.get(full_name__icontains=child_name)
@@ -43,24 +62,7 @@ def create_commendation(child_name, subject):
             subject=subject
         ).order_by('-date').first()
 
-        commendations = [
-            'Прекрасно!',
-            'Ты меня приятно удивил!',
-            'Очень хороший ответ!',
-            'Так держать!',
-            'Ты растешь над собой!',
-            'Великолепно!',
-            'Молодец!',
-            'Гораздо лучше, чем я ожидал!',
-            'Ты, как всегда, точен!',
-            'Я поражен!',
-            'Я вижу, как ты стараешься!',
-            'Ты многое сделал, я это вижу!',
-            'Замечательно!',
-            'Потрясающе!',
-            'С каждым разом у тебя получается всё лучше!'
-        ]
-        commendation_text = random.choice(commendations)
+        commendation_text = random.choice(COMMENDATIONS)
         Commendation.objects.create(
             text=commendation_text,
             created=lesson.date,
